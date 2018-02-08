@@ -1,4 +1,4 @@
-package com.github.mpnsk.tic_tac_toe;
+package com.github.mpnsk.tic_tac_toe.core;
 
 import lombok.Getter;
 
@@ -16,19 +16,30 @@ class Game {
     private final List<String> playerPool;
     @Getter
     private int[][] board;
+    private int tilesTaken = 0;
+    @Getter
+    private GameState gameState;
+
+    public enum GameState {RUNNING, WON, DRAW}
 
     Game(String... player) {
         playerPool = new ArrayList<>(Arrays.asList(player));
         players = playerPool.iterator();
         board = new int[3][3];
-        nextTurn();
+        gameState = GameState.RUNNING;
+        nextPlayer();
     }
 
     void markTile(int x, int y) throws IllegalStateException, IllegalArgumentException {
         testMoveForRange(x, y);
         testMoveForAlreadyTaken(board[x][y]);
         setTile(x, y);
-        nextTurn();
+        if (isWinningMove(x, y)) announceWinner();
+        else nextPlayer();
+    }
+
+    private boolean isWinningMove(int x, int y) {
+        return false;
     }
 
     private void testMoveForAlreadyTaken(int playerNumber) {
@@ -46,14 +57,15 @@ class Game {
     private void setTile(int x, int y) {
         int currentPlayerNumber = playerPool.indexOf(currentPlayer) + 1;
         board[x][y] = currentPlayerNumber;
+        tilesTaken++;
     }
 
-    private void nextTurn() {
+    private void nextPlayer() {
         if (!players.hasNext()) players = playerPool.iterator();
         currentPlayer = players.next();
     }
 
-    boolean isWon() {
-        return false;
+    private void announceWinner() {
+        System.out.println("The winner is " + currentPlayer);
     }
 }
