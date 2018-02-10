@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-class Game {
+public class Game {
     @Getter
     private String currentPlayer;
     private Iterator<String> players;
@@ -22,7 +22,7 @@ class Game {
 
     public enum GameState {RUNNING, WON, DRAW}
 
-    Game(String... player) {
+    public Game(String... player) {
         playerPool = new ArrayList<>(Arrays.asList(player));
         players = playerPool.iterator();
         board = new int[3][3];
@@ -30,7 +30,7 @@ class Game {
         nextPlayer();
     }
 
-    void markTile(int x, int y) throws IllegalStateException, IllegalArgumentException {
+    public void markTile(int x, int y) throws IllegalStateException, IllegalArgumentException {
         testMoveForRange(x, y);
         testMoveForAlreadyTaken(board[x][y]);
         setTile(x, y);
