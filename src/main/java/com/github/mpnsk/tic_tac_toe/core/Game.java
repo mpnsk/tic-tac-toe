@@ -49,9 +49,10 @@ public class Game {
 
     private void testMoveForRange(int x, int y) {
         int lower = 0, upper = 2;
-        Predicate<Integer> inRange = integer -> lower <= integer && integer <= upper;
-        if (!inRange.test(x) || !inRange.test(y))
-            throw new IllegalArgumentException("Move Argument needs to be between " + lower + " and " + upper);
+        if(x < lower || x > upper)
+            throw new IllegalArgumentException("Argument x needs to be between " + lower + " and " + upper);
+        if(y < lower || y > upper)
+            throw new IllegalArgumentException("Argument y needs to be between " + lower + " and " + upper);
     }
 
     private void setTile(int x, int y) {
