@@ -22,9 +22,9 @@ public class Game {
 
     public enum GameState {RUNNING, WON, DRAW}
 
-    public Game(String... player) {
-        playerPool = new ArrayList<>(Arrays.asList(player));
-        players = playerPool.iterator();
+    public Game(List<String> players) {
+        playerPool = new ArrayList<>(players);
+        this.players = playerPool.iterator();
         board = new int[3][3];
         gameState = GameState.RUNNING;
         nextPlayer();

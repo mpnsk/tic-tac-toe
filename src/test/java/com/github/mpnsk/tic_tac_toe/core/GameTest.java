@@ -3,14 +3,19 @@ package com.github.mpnsk.tic_tac_toe.core;
 import lombok.experimental.var;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 public class GameTest {
     private final String player1 = "Adam", player2 = "Bob";
-    private final String[] players = {player1, player2};
+    private final List<String> players = new ArrayList<>(Arrays.asList(player1, player2));
 
     @Test
-    public void currentPlayer() {
+    public void marking_a_tile_changes_player() {
         var game = new Game(players);
         assertEquals(player1, game.getCurrentPlayer());
         game.markTile(1, 1);
@@ -18,19 +23,22 @@ public class GameTest {
     }
 
     @Test
-    public void markField() {
+    public void moves_mark_field_with_player_number() {
         var game = new Game(players);
         game.markTile(1, 1);
+        assertThat(game.getBoard()[1][1], is(1));
+        game.markTile(0, 0);
+        assertThat(game.getBoard()[0][0], is(2));
     }
 
     @Test
-    public void game_started_and_not_won() {
+    public void a_started_game_is_not_won() {
         var game = new Game(players);
         assertEquals(Game.GameState.RUNNING, game.getGameState());
     }
 
     @Test
-    public void test_board() {
+    public void player_moves_actually_set_the_board() {
         var game = new Game(players);
         game.markTile(0, 0);
         int[][] firstState = {{1, 0, 0}, {0, 0, 0}, {0, 0, 0}};
@@ -54,14 +62,13 @@ public class GameTest {
     }
 
     @Test
-    public void is_winning_move_Test() {
+    public void is_winning_move() {
         var game = new Game(players);
         int[][] moves = {
                 {0, 0}, {0, 1},
                 {1, 0}, {0, 2},
                 {2, 0}, {1, 1}
         };
-
         for (var move : moves) {
             assertEquals(Game.GameState.RUNNING, game.getGameState());
             game.markTile(move[0], move[1]);
@@ -70,7 +77,7 @@ public class GameTest {
     }
 
     @Test
-    public void invalid_input_throws_exception_Test() {
+    public void invalid_input_throws_exception() {
         var game = new Game(players);
         int[][] inputs = {{-1, 0}, {0, -1}, {3, 0}, {0, 3}};
         for (int[] input : inputs) {
@@ -82,14 +89,10 @@ public class GameTest {
         }
     }
 
-    @Test
-    public void invalid_move_throws_exception_Test() {
+    @Test(expected = IllegalStateException.class)
+    public void invalid_move_throws_exception() {
         var game = new Game(players);
-        try {
-            game.markTile(1, 2);
-            game.markTile(1, 2);
-            fail("moved to same tile twice, expected exception to be thrown!");
-        } catch (IllegalStateException ignored) {
-        }
+        game.markTile(1, 2);
+        game.markTile(1, 2);
     }
 }
