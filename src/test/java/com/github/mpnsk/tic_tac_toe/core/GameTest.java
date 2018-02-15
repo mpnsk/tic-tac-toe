@@ -1,5 +1,6 @@
 package com.github.mpnsk.tic_tac_toe.core;
 
+import com.github.mpnsk.tic_tac_toe.core.Game.GameState;
 import lombok.experimental.var;
 import org.junit.Test;
 
@@ -34,7 +35,7 @@ public class GameTest {
     @Test
     public void a_started_game_is_not_won() {
         var game = new Game(players);
-        assertEquals(Game.GameState.RUNNING, game.getGameState());
+        assertThat(game.getGameState(), is(GameState.RUNNING));
     }
 
     @Test
@@ -50,30 +51,18 @@ public class GameTest {
     }
 
     @Test
-    public void game_played_and_won() {
-        var game = new Game(players);
-        int[][] moves = {{0, 0}, {1, 0}, {1, 1}, {0, 2}};
-
-        for (var move : moves) {
-            assertEquals(Game.GameState.RUNNING, game.getGameState());
-            game.markTile(move[0], move[1]);
-        }
-//        TODO check when game is actually won
-    }
-
-    @Test
     public void is_winning_move() {
         var game = new Game(players);
         int[][] moves = {
                 {0, 0}, {0, 1},
-                {1, 0}, {0, 2},
-                {2, 0}, {1, 1}
+                {1, 0}, {0, 2}
         };
         for (var move : moves) {
-            assertEquals(Game.GameState.RUNNING, game.getGameState());
             game.markTile(move[0], move[1]);
+            assertThat(game.getGameState(), is(GameState.RUNNING));
         }
-
+        game.markTile(2,0);
+        assertThat(game.getGameState(), is(GameState.WON));
     }
 
     @Test

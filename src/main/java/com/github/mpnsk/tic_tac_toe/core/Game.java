@@ -3,10 +3,8 @@ package com.github.mpnsk.tic_tac_toe.core;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class Game {
     @Getter
@@ -16,7 +14,6 @@ public class Game {
     private final List<String> playerPool;
     @Getter
     private int[][] board;
-    private int tilesTaken = 0;
     @Getter
     private GameState gameState;
 
@@ -34,11 +31,22 @@ public class Game {
         testMoveForRange(x, y);
         testMoveForAlreadyTaken(board[x][y]);
         setTile(x, y);
-        if (isWinningMove(x, y)) announceWinner();
+        if (isWinningMove()) announceWinner();
         else nextPlayer();
     }
 
-    private boolean isWinningMove(int x, int y) {
+    private boolean isWinningMove() {
+        int p = playerPool.indexOf(currentPlayer) + 1;
+        for (int x = 0; x < 2; x++)
+            if (board[x][0] == p && board[x][1] == p && board[x][2] == p)
+                return true;
+        for (int y = 0; y < 2; y++)
+            if (board[0][y] == p && board[1][y] == p && board[2][y] == p)
+                return true;
+        if (board[0][0] == p && board[1][1] == p && board[2][2] == p)
+            return true;
+        if (board[2][0] == p && board[1][1] == p && board[0][2] == p)
+            return true;
         return false;
     }
 
@@ -49,16 +57,15 @@ public class Game {
 
     private void testMoveForRange(int x, int y) {
         int lower = 0, upper = 2;
-        if(x < lower || x > upper)
+        if (x < lower || x > upper)
             throw new IllegalArgumentException("Argument x needs to be between " + lower + " and " + upper);
-        if(y < lower || y > upper)
+        if (y < lower || y > upper)
             throw new IllegalArgumentException("Argument y needs to be between " + lower + " and " + upper);
     }
 
     private void setTile(int x, int y) {
         int currentPlayerNumber = playerPool.indexOf(currentPlayer) + 1;
         board[x][y] = currentPlayerNumber;
-        tilesTaken++;
     }
 
     private void nextPlayer() {
@@ -67,6 +74,7 @@ public class Game {
     }
 
     private void announceWinner() {
+        gameState = GameState.WON;
         System.out.println("The winner is " + currentPlayer);
     }
 }
